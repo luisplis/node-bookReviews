@@ -1,8 +1,2 @@
-curl -X GET http://localhost:5000/title/Fairy
-[
-  {
-    "author": "Hans Christian Andersen",
-    "title": "Fairy tales",
-    "reviews": {}
-  }
-]
+ curl -X GET http://localhost:5000/title/tales 
+[{"author":"Hans Christian Andersen","title":"Fairy tales","reviews":{}}]

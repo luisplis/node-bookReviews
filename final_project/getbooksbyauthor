@@ -1,8 +1,2 @@
-curl -X GET http://localhost:5000/author/Honor  
-[
-  {
-    "author": "Honoré de Balzac",
-    "title": "Le Père Goriot",
-    "reviews": {}
-  }
-]
+curl -X GET http://localhost:5000/author/Hans
+[{"author":"Hans Christian Andersen","title":"Fairy tales","reviews":{}}]
