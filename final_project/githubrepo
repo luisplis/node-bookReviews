@@ -1,3 +1,2 @@
 curl -s https://api.github.com/repos/luisplis/node-bookReviews | jq '.parent.full_name'
-
 "ibm-developer-skills-network/expressBookReviews"

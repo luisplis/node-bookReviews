@@ -58,11 +58,9 @@ public_users.get('/isbn/:isbn', function (req, res) {
             const response = await axios.get('http://localhost:5000/books');
             const books = response.data;
 
-            const filteredBooks = Object.values(books).filter(
-                (b) => b.isbn === isbnParam
-            );
-            
-            if (filteredBooks.length > 0) {
+            const filteredBooks = books[isbnParam];
+
+            if (filteredBooks) {
                 return res.status(200).json(filteredBooks);
             } else {
                 return res.status(404).json({ message: "No books found for the specified ISBN" });
@@ -88,7 +86,7 @@ public_users.get('/author/:author', (req, res) => {
                 (b) => b.author.includes(authorParam)
             );
 
-            if (filteredBooks.length > 0) {
+            if (filteredBooks) {
                 return res.status(200).json(filteredBooks);
             } else {
                 return res.status(404).json({ message: "No books found for the specified author" });
@@ -114,7 +112,7 @@ public_users.get('/title/:title', function (req, res) {
         (b) => b.title.includes(titleParam)
       );
 
-      if (filteredBooks.length > 0) {
+      if (filteredBooks) {
         return res.status(200).send(filteredBooks);
       } else {
         return res.status(404).json({ message: "No books found with this title" });
