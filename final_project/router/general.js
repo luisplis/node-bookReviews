@@ -1,137 +1,133 @@
 const express = require('express');
 let books = require("./booksdb.js");
+const axios = require('axios');
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
-const axios = require('axios');
+
 const public_users = express.Router();
 
-public_users.post("/register", (req,res) => {
-  const user = req.body.username;
-  const pass = req.body.password;
-  
-  if (!user || !pass) {
-      return res.status(404).json({ message: "Error: username or password inexistent" });
-  }
-  
-  let exists = users.filter((user) => {
-    return (user.username === user && user.password === pass);
-  });
-  
-  if (exists.length)
-    return res.status(404).json({message: "User already exists!"});
-
-  users.push({"username": user, "password": pass});
-
-  return res.json({message: `User '${user}' registered successfully`});
-});
-
-// Get the book list available in the shop (SYNCHRONOUS)
-public_users.get('/books',function (req, res) {
-  return res.send(JSON.stringify(books, null, 2)); // OK - Task 1-4
-});
+// Check if a user with the given username already exists
+const doesExist = (username) => {
+    // Filter the users array for any user with the same username
+    let userswithsamename = users.filter((user) => {
+        return user.username === username;
+    });
+    // Return true if any user with the same username is found, otherwise false
+    if (userswithsamename.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 // Get the book list available in the shop
-public_users.get('/', function (req, res) {
-    (async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/books');
-            
-            return res.status(200).send(JSON.stringify(response.data, null, 2));
-        } 
-        catch (error) {
-            console.error("Axios Error on GET books:", error.message);
-            
-            return res.status(500).json({
-                message: "Error fetching book list",
-                error: error.message
-            });
-        }
-    })();
+public_users.get('/',async function (req, res) {
+  try {
+    return res.send(books);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving all books" });
+  }
+});
+
+public_users.post("/register", (req,res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  // Check if both username and password are provided
+  if (username && password) {
+      // Check if the user does not already exist
+      if (!doesExist(username)) {
+          // Add the new user to the users array
+          users.push({"username": username, "password": password});
+          return res.status(200).json({message: "User successfully registered. Now you can login"});
+      } else {
+          return res.status(404).json({message: "User already exists!"});
+      }
+  }
+
+  // Return error if username or password is missing
+  return res.status(404).json({message: "Unable to register user. No username or password provided."});
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn', function (req, res) {
-    const isbnParam = req.params.isbn;
+public_users.get('/isbn/:isbn',async function (req, res) {
+  const isbn = req.params.isbn;
+  
+  try {
+    const response = await axios.get("http://localhost:5000/"); 
+    const allBooks = response.data;
+    
+    if (!allBooks[isbn]){
+      return res.status(404).json({message: "Book not found"});
+    }
 
-    (async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/books');
-            const books = response.data;
+    return res.send(allBooks[isbn]);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving books by ISBN" });
+  }
 
-            const filteredBooks = books[isbnParam];
-
-            if (filteredBooks) {
-                return res.status(200).json(filteredBooks);
-            } else {
-                return res.status(404).json({ message: "No books found for the specified ISBN" });
-            }
-
-        } catch (error) {
-            console.error("Axios Error:", error.message);
-            return res.status(500).json({ message: "Error connecting to the book database" });
-        }
-    })();
-});
-
+ });
+  
 // Get book details based on author
-public_users.get('/author/:author', (req, res) => {
-    const authorParam = req.params.author;
+public_users.get('/author/:author',async function (req, res) {
+  const authorQuery = req.params.author.toLowerCase();
 
-    (async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/books');
-            const books = response.data;
-          
-            const filteredBooks = Object.values(books).filter(
-                (b) => b.author.includes(authorParam)
-            );
+  try {
+    const response = await axios.get("http://localhost:5000/"); 
+    const allBooks = response.data;
 
-            if (filteredBooks) {
-                return res.status(200).json(filteredBooks);
-            } else {
-                return res.status(404).json({ message: "No books found for the specified author" });
-            }
+    const filteredBooks = Object.values(allBooks).filter((book)=> {
+      return book.author.toLowerCase().includes(authorQuery);
+    });
 
-        } catch (error) {
-            console.error("Axios Error:", error.message);
-            return res.status(500).json({ message: "Error connecting to the book database" });
-        }
-    })();
+    if (filteredBooks.length > 0){
+      return res.send(filteredBooks);
+    } else {
+      return res.status(404).json({message: "No books found for this author"});
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving books by author" });
+  }
 });
 
 // Get all books based on title
-public_users.get('/title/:title', function (req, res) {
-  const titleParam = req.params.title;
+public_users.get('/title/:title',async function (req, res) {
+  const titleQuery = req.params.title.toLowerCase();
 
-  (async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/');
-      const books = response.data;
+  try {
+    const response = await axios.get("http://localhost:5000/"); 
+    const allBooks = response.data;
 
-      const filteredBooks = Object.values(books).filter(
-        (b) => b.title.includes(titleParam)
-      );
+    const filteredBooks = Object.values(allBooks).filter((book)=> {
+      return book.title.toLowerCase().includes(titleQuery);
+    });
 
-      if (filteredBooks) {
-        return res.status(200).send(filteredBooks);
-      } else {
-        return res.status(404).json({ message: "No books found with this title" });
-      }
-
-    } catch (error) {
-      console.error("Axios Error on GET books by title:", error.message);
-      return res.status(500).json({ message: "Internal Server Error" });
+    if (filteredBooks.length > 0){
+      return res.send(filteredBooks);
     }
-  })();
+
+    return res.status(404).json({message: "No books found for this title"});
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving books by title" });
+  }
 });
 
 //  Get book review
-public_users.get('/review/:isbn',function (req, res) {
-  const reviews = books[req.params.isbn].reviews;
-  
-  if (reviews) return res.send(JSON.stringify(reviews, null, 2));
-  
-  return res.status(404).json({message: "Empty reviews for this book"});
+public_users.get('/review/:isbn',async function (req, res) {
+  const isbn = req.params.isbn;
+
+  try {
+    const response = await axios.get("http://localhost:5000/"); 
+    const allBooks = response.data;
+
+    if (!allBooks[isbn]){
+      return res.status(404).json({message: "Book not found"});
+    }
+
+    return res.send(JSON.stringify(allBooks[isbn].reviews,null,4));
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving books by review" });
+  }
 });
 
 module.exports.general = public_users;
