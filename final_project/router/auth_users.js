@@ -52,14 +52,33 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   const review = req.body.review;
   
   if (!user) return res.status(404).json({ message: "Error adding review for user" });
-  if (!isbn) return res.status(404).json({ message: "Params Error for isbn" });
-  if (!review) return res.status(404).json({ message: "Params Error on review" });
+  if (!isbn) return res.status(404).json({ message: "Params Error for isbn on add review" });
+  if (!review) return res.status(404).json({ message: "Params Error on add review" });
 
   const msg = (books[isbn].reviews[user]) ? "updated" : "added";
 
   books[isbn].reviews[user] = review;
 
   return res.status(200).send("Review "+msg+" successfully by "+user);
+});
+
+// Add a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  
+  let user = req.user.data? req.user.data: req.user; // fix user (session/cookie  object)
+  
+  const isbn = req.params.isbn;
+  
+  if (!user) return res.status(404).json({ message: "Error deleting review for user" });
+  if (!isbn) return res.status(404).json({ message: "Params Error for isbn on delete review" });
+  
+  const review = books[isbn].reviews[user];
+  if (!review) return res.status(404).json({ message: "Params Error on delete review" });
+  
+  const msg = (books[isbn].reviews[user]) ? "deleted" : "not found";
+  delete books[isbn].reviews[user];
+
+  return res.status(200).send("Review is "+msg+" by "+user);
 });
 
 module.exports.authenticated = regd_users;
