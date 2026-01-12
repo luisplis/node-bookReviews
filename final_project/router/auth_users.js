@@ -37,7 +37,7 @@ regd_users.post("/login", (req,res) => {
     // Store access token and username in session
     req.session.authorization = token;
 
-      return res.status(200).send("User successfully logged by TOKEN");
+      return res.status(200).send("User "+username+" successfully logged by TK");
   }
 
   return res.status(208).json({ message: "Invalid username or password for login" });

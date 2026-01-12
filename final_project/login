@@ -1,2 +1,2 @@
-curl -X POST -H "Content-Type: application/json" -d '{ "username": "Paco", "password": "1234"}' http://localhost:5000/customer/login -c cookies.txt 
-User successfully logged by TOKEN
+curl -X POST -H "Content-Type: application/json" -d '{ "username": "pepito", "password": "1234"}' http://localhost:5000/customer/login -c cookies.txt 
+User pepito successfully logged by TK
