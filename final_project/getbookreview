@@ -1,2 +1,2 @@
-curl http://localhost:5000/review/3
+curl -X GET http://localhost:5000/review/3
 {}

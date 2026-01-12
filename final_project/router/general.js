@@ -30,7 +30,7 @@ public_users.get('/',function (req, res) {
   return res.send(JSON.stringify(books, null, 2)); // OK - Task 1-4
 });
 
-// ASYNC/AWAIT
+// ASYNC/AWAIT -- require('axios') => axios.get()
 public_users.get('/books',function (req, res) {
 
   (async () => {
@@ -64,7 +64,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
   return res.status(404).json({message: "Book not found"});
 });
 
-// ASYNC/AWAIT ISBN
+// ASYNC/AWAIT ISBN -- require('axios') => axios.get()
 public_users.get('/books/isbn/:isbn',function (req, res) {
  
   const isbn  = req.params.isbn;
@@ -98,7 +98,7 @@ public_users.get('/author/:author',function (req, res) {
   return res.status(404).json({message: "Books not found"});
 });
 
-// ASYNC/AWAIT AUTHOR
+// ASYNC/AWAIT AUTHOR -- require('axios') => axios.get()
 public_users.get('/books/author/:author',function (req, res) {
  
   const author  = req.params.author;
