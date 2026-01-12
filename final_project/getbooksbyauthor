@@ -1,5 +1,4 @@
 curl http://localhost:5000/author/Unknown
-
 [
   {
     "author": "Unknown",

@@ -1,3 +1,2 @@
 curl -X DELETE -H "Content-Type: application/json" http://localhost:5000/customer/auth/review/4 -b cookies.txt
-
-Review is deleted by admin
+Review is deleted by Paco

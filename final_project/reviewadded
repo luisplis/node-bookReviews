@@ -1,3 +1,2 @@
-curl -X PUT -H "Content-Type: application/json" -d '{ "review": "kaka-de-vaca"}' http://localhost:5000/customer/auth/review/4 -b cookies.txt
-
-Review added successfully by "admin"
+curl -X PUT -H "Content-Type: application/json" -d '{ "review": "comments"}' http://localhost:5000/customer/auth/review/4 -b cookies.txt    
+Review added successfully by Paco

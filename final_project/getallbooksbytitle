@@ -1,5 +1,4 @@
-curl http://localhost:5000/title/Fairy Tales
-
+curl http://localhost:5000/title/Fairy
 [
   {
     "author": "Hans Christian Andersen",
