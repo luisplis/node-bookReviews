@@ -37,7 +37,7 @@ regd_users.post("/login", (req,res) => {
     // Store access token and username in session
     req.session.authorization = token;
 
-      return res.status(200).send("User "+username+" successfully logged by TK");
+      return res.status(200).json({ message: "User "+username+" successfully logged in" });
   }
 
   return res.status(208).json({ message: "Invalid username or password for login" });
@@ -59,7 +59,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
   books[isbn].reviews[user] = review;
 
-  return res.status(200).send("Review "+review+" "+msg+" is successfully by "+user+" on "+isbn);
+  return res.status(200).json({ message: "Review "+review+" "+msg+" is successfully by "+user+" on "+isbn });
 });
 
 // Add a book review
@@ -78,7 +78,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
   const msg = (books[isbn].reviews[user]) ? "deleted" : "not found";
   delete books[isbn].reviews[user];
 
-  return res.status(200).send("Review '"+review+"' is "+msg+" by "+user+" on "+isbn);
+  return res.status(200).json({ message: "Review '"+review+"' is "+msg+" by "+user+" on "+isbn });
 });
 
 module.exports.authenticated = regd_users;

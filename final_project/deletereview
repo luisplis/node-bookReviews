@@ -1,2 +1,2 @@
-curl -X DELETE -H "Content-Type: application/json" http://localhost:5000/customer/auth/review/4 -b cookies.txt
-Review 'comments' is deleted by pepito on 4
+ curl -X DELETE -H "Content-Type: application/json" -b cookies.txt http://localhost:5000/customer/auth/review/2
+{"message":"Review 'comments' is deleted by pepito on 2"}

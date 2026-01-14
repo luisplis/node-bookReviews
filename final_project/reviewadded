@@ -1,2 +1,2 @@
-curl -X PUT -H "Content-Type: application/json" -d '{ "review": "comments"}' http://localhost:5000/customer/auth/review/4 -b cookies.txt    
-Review comments added is successfully by pepito on 4
+curl -X PUT -H "Content-Type: application/json" -d '{ "review": "comments"}' -b cookies.txt http://localhost:5000/customer/auth/review/2
+{"message":"Review comments added is successfully by pepito on 2"}
